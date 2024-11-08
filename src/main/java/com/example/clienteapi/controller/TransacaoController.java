@@ -23,7 +23,7 @@ public class TransacaoController {
     @PostMapping("/{clienteId}")
     public ResponseEntity<String> cadastrarTransacao(
             @PathVariable Long clienteId,
-            @RequestParam String tipo, // tipo da transação: "credito" ou "debito"
+            @RequestParam String tipo,
             @RequestParam BigDecimal valor) {
 
         String resultado = transacaoService.cadastrarTransacao(clienteId, tipo, valor);
@@ -35,31 +35,33 @@ public class TransacaoController {
         }
     }
 
-    // Buscar o extrato do cliente (todas as transações) e calcular saldo total
     @GetMapping("/{clienteId}/extrato")
     public ResponseEntity<Map<String, Object>> buscarExtrato(@PathVariable Long clienteId) {
         List<TransacaoEntity> extrato = transacaoService.buscarExtrato(clienteId);
 
         if (extrato == null || extrato.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404, cliente não encontrado
+            Map<String, Object> response = new HashMap<>();
+            response.put("extrato", extrato);
+            response.put("saldoTotal", BigDecimal.ZERO);
+            return new ResponseEntity<>(response, HttpStatus.OK);
         }
 
-        // Calcular o saldo total
+        // Saldo total
         BigDecimal saldoTotal = BigDecimal.ZERO;
 
         for (TransacaoEntity transacao : extrato) {
             if ("credito".equalsIgnoreCase(transacao.getTipo())) {
-                saldoTotal = saldoTotal.add(transacao.getValor()); // Adiciona o crédito
+                saldoTotal = saldoTotal.add(transacao.getValor());
             } else if ("debito".equalsIgnoreCase(transacao.getTipo())) {
-                saldoTotal = saldoTotal.subtract(transacao.getValor()); // Subtrai o débito
+                saldoTotal = saldoTotal.subtract(transacao.getValor());
             }
         }
 
-        // Retornar transações e saldo total em um mapa
         Map<String, Object> response = new HashMap<>();
         response.put("extrato", extrato);
         response.put("saldoTotal", saldoTotal);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
 }

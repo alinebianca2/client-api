@@ -58,7 +58,6 @@ public class ClienteService {
         if (existingClienteOpt.isPresent()) {
             ClienteEntity existingCliente = existingClienteOpt.get();
 
-            // Atualizando os campos do cliente conforme o enviado na requisição
             if (updatedCliente.getNome() != null && !updatedCliente.getNome().isEmpty()) {
                 existingCliente.setNome(updatedCliente.getNome());
             }
@@ -75,7 +74,6 @@ public class ClienteService {
                 existingCliente.setNumeroConta(updatedCliente.getNumeroConta());
             }
 
-            // Salvando as alterações
             return clienteRepository.save(existingCliente);
         } else {
             throw new IllegalArgumentException("Cliente não encontrado.");

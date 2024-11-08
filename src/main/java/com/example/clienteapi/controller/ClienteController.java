@@ -44,7 +44,7 @@ public class ClienteController {
             ClienteEntity clienteAtualizado = clienteService.updateCliente(id, updatedCliente);
             return new ResponseEntity<>(clienteAtualizado, HttpStatus.OK);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Retorna 404 caso o cliente não seja encontrado
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Retorna 404
         }
     }
 
@@ -64,9 +64,9 @@ public class ClienteController {
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
         try {
             clienteService.deleteCliente(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204 caso a exclusão seja bem-sucedida
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // 204
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 se o cliente não for encontrado
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404
         }
     }
 
